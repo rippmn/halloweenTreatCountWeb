@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
-	ArrayList<TrickOrTreatReportingEvent> ttres; //= new ArrayList<TrickOrTreatReportingEvent>();
-	TreeMap<Integer, TrickOrTreatReportingEvent> ttresByTime = new TreeMap<Integer, TrickOrTreatReportingEvent>();
+	@Autowired
+	private TrickOrTreatEventService ttes;
+	
+	private ArrayList<TrickOrTreatReportingEvent> ttres; //= new ArrayList<TrickOrTreatReportingEvent>();
+	private TreeMap<Integer, TrickOrTreatReportingEvent> ttresByTime = new TreeMap<Integer, TrickOrTreatReportingEvent>();
 	
 	@Override
 	public List<TrickOrTreatReportingEvent> getAllEvents() {
@@ -37,11 +41,8 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 	//we will start at 5:00 (there will be event for all years)
 	//every time quartz job fires get the prior year events and transfer to the next cycle
 	
-	
-	
 	public void initialize(){
-		RestTemplate restTemplate = new RestTemplate();
-		TTEvent[] es = restTemplate.getForObject("http://localhost:8080/getTTs", TTEvent[].class);
+		TTEvent[] es = ttes.getAllTTEvents();
 		
 		TreeMap<Date, Integer> ttes = new TreeMap<Date, Integer>();
 		
@@ -94,9 +95,10 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 	
 	public void updateReport(){
 		//get the current events from service 
-		TTEvent[] ttes = new TTEvent[1];
+		//anything in last two mins
+		TTEvent[] ttesEvents = ttes.getEventsAfterDate(new Date(System.currentTimeMillis()-120000));
 		
-		for (TTEvent tte: ttes) {
+		for (TTEvent tte: ttesEvents) {
 			this.addEvent(tte.getEventDateTime(), tte.getCount());
 		}
 	
@@ -106,6 +108,7 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 	}
 	
 	private void updateList(){
+		//TODO this would be cooler if and only if we could add to existing list instead of creating new one (future)
 		if(ttresByTime.floorKey(TrickOrTreatReportingEvent.getTime(new Date())) != null){
 			//the returnable subset to be up to date
 			ttres = new ArrayList<TrickOrTreatReportingEvent>(ttresByTime.headMap(TrickOrTreatReportingEvent.getTime(new Date()), false).values());				
