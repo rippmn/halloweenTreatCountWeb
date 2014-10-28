@@ -2,11 +2,12 @@ package com.rippmn.halloween;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class TrickOrTreatReportingEvent {
 	
-	private HashMap<String, Integer> yearCounts = new HashMap<String, Integer>();
+	private TreeMap<String, Integer> yearCounts = new TreeMap<String, Integer>();
 	
 	private Integer time;
 	
@@ -53,7 +54,7 @@ public class TrickOrTreatReportingEvent {
 		
 	}
 
-	public HashMap<String, Integer> getYearCounts() {
+	public Map<String, Integer> getYearCounts() {
 		return yearCounts;
 	}
 	
