@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.rippmn.halloween.domain.TTEvent;
@@ -19,8 +21,8 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 		this.ttes = ttes;
 	}
 
-	private ArrayList<TrickOrTreatReportingEvent> ttres; // = new
-															// ArrayList<TrickOrTreatReportingEvent>();
+	private ArrayList<TrickOrTreatReportingEvent> ttres;
+
 	private TreeMap<Integer, TrickOrTreatReportingEvent> ttresByTime = new TreeMap<Integer, TrickOrTreatReportingEvent>();
 
 	@Override
@@ -34,6 +36,7 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 	// every time quartz job fires get the prior year events and transfer to the
 	// next cycle
 
+	@PostConstruct
 	public void initialize() {
 		TTEvent[] es = ttes.getAllTTEvents();
 
