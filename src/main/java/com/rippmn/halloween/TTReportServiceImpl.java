@@ -1,14 +1,11 @@
 package com.rippmn.halloween;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
 
 public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
@@ -45,8 +42,7 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 		for (Date d : ttes.keySet()) {
 
-			// everything below here is method
-			this.addEvent(d, ttes.get(d));
+			this.addEvent(d, ttes.get(d), false);
 
 		}
 
@@ -69,17 +65,36 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 	}
 
-	private void addEvent(Date d, Integer count) {
-		Integer last;
+	private void addEvent(Date d, Integer count, boolean updateTotals) {
 		TrickOrTreatReportingEvent ttre = ttresByTime
 				.get(TrickOrTreatReportingEvent.getTime(d));
 		if (ttre == null) {
 			ttre = new TrickOrTreatReportingEvent(d, count);
 			ttresByTime.put(ttre.getTime(), ttre);
+			if (updateTotals) {
+				// get the lower key and transfer data
+				TrickOrTreatReportingEvent oldTTRE = ttresByTime.lowerEntry(
+						ttre.getTime()).getValue();
+
+				for (String year : oldTTRE.getYearCounts().keySet()) {
+					int lastCount = oldTTRE.getYearCounts().get(year);
+					int currentCount = ttre.getYearCounts().get(year) != null ? ttre
+							.getYearCounts().get(year) : 0;
+					ttre.getYearCounts().put(year, lastCount + currentCount);
+
+				}
+			}
 		} else {
 			ttre.putEvent(d, count);
 		}
 
+		// traverse rest of set after this and add this event as well
+		if (updateTotals) {
+			for (Integer key : ttresByTime.tailMap(ttre.getTime(), false)
+					.keySet()) {
+				ttresByTime.get(key).putEvent(d, count);
+			}
+		}
 	}
 
 	public void updateReport() {
@@ -89,21 +104,10 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 		TTEvent[] ttesEvents = ttes.getEventsAfterDate(d);
 
-		for (TTEvent tte : ttesEvents) {
-			this.addEvent(tte.getEventDateTime(), tte.getCount());
-		}
-
-		Integer time = TrickOrTreatReportingEvent.getTime(new Date());
-
-		TrickOrTreatReportingEvent event = ttresByTime.get(time);
-		TrickOrTreatReportingEvent lastEvent = ttresByTime.lowerEntry(time)
-				.getValue();
-
-		for (String year : lastEvent.getYearCounts().keySet()) {
-			int lastCount = lastEvent.getYearCounts().get(year);
-			int currentCount = event.getYearCounts().get(year) != null ? event
-					.getYearCounts().get(year) : 0;
-			event.getYearCounts().put(year, lastCount + currentCount);
+		if (ttesEvents != null && ttesEvents.length > 0) {
+			for (TTEvent tte : ttesEvents) {
+				this.addEvent(tte.getEventDateTime(), tte.getCount(), true);
+			}
 		}
 
 		this.updateList();
@@ -115,13 +119,19 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 		// list instead of creating new one (future)
 
 		if (ttres != null) {
-			
-			//need to add the next entry
-			if(ttres.size() > 0){
-				Integer lastKey = ttres.get(ttres.size()-1).getTime();
-				ttres.add(ttresByTime.higherEntry(lastKey).getValue());
+
+			// need to add the next entry
+			if (ttres.size() > 0) {
+				Integer lastKey = ttres.get(ttres.size() - 1).getTime();
+				// note we always add this need a path to not add
+				// if the time is not greater than the next key we should not
+				// add
+				Integer nextKey = ttresByTime.higherKey(lastKey);
+				if (TrickOrTreatReportingEvent.getTime(new Date()) > nextKey) {
+					ttres.add(ttresByTime.get(nextKey));
+				}
 			}
-		
+
 		} else {// this is the initial load
 			ttres = new ArrayList<TrickOrTreatReportingEvent>();
 
