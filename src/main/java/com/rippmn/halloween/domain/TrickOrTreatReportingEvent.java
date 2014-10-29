@@ -1,4 +1,4 @@
-package com.rippmn.halloween;
+package com.rippmn.halloween.domain;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

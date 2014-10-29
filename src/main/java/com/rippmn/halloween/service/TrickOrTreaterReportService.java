@@ -1,6 +1,8 @@
-package com.rippmn.halloween;
+package com.rippmn.halloween.service;
 
 import java.util.List;
+
+import com.rippmn.halloween.domain.TrickOrTreatReportingEvent;
 
 public interface TrickOrTreaterReportService {
 

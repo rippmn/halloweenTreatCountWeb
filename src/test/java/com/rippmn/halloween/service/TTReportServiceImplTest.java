@@ -1,4 +1,4 @@
-package com.rippmn.halloween;
+package com.rippmn.halloween.service;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import com.rippmn.halloween.domain.TTEvent;
+import com.rippmn.halloween.domain.TrickOrTreatReportingEvent;
+import com.rippmn.halloween.service.TTReportServiceImpl;
+import com.rippmn.halloween.service.TrickOrTreatEventService;
 
 import static org.mockito.Mockito.*;
 

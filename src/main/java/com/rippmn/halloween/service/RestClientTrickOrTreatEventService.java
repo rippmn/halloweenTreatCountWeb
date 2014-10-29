@@ -1,8 +1,10 @@
-package com.rippmn.halloween;
+package com.rippmn.halloween.service;
 
 import java.util.Date;
 
 import org.springframework.web.client.RestTemplate;
+
+import com.rippmn.halloween.domain.TTEvent;
 
 public class RestClientTrickOrTreatEventService implements
 		TrickOrTreatEventService {

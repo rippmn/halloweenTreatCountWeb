@@ -1,4 +1,4 @@
-package com.rippmn.halloween;
+package com.rippmn.halloween.domain;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
+
+import com.rippmn.halloween.domain.TrickOrTreatReportingEvent;
 
 public class TrickOrTreatReportingEventTest {
 

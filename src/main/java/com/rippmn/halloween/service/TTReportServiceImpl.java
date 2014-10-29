@@ -1,4 +1,4 @@
-package com.rippmn.halloween;
+package com.rippmn.halloween.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.rippmn.halloween.domain.TTEvent;
+import com.rippmn.halloween.domain.TrickOrTreatReportingEvent;
 
 public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
