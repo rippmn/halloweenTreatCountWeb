@@ -14,11 +14,15 @@ public class RestClientTrickOrTreatEventService implements
 		TrickOrTreatEventService {
 
 	private final static SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss");
+	private final static String endpoint = System.getenv("REST_ENDPOINT");
 	
 	@Override
 	public TTEvent[] getAllTTEvents() {
+		
+		System.out.println(endpoint);
+		
 		RestTemplate restTemplate = new RestTemplate();
-		TTEvent[] es = restTemplate.getForObject("http://localhost:8080/getTTs", TTEvent[].class);
+		TTEvent[] es = restTemplate.getForObject(endpoint+"/getTTs", TTEvent[].class);
 		
 		return es;
 	}
@@ -33,7 +37,7 @@ public class RestClientTrickOrTreatEventService implements
 		
 		System.out.println("calling get After");
 		
-		TTEvent[] es = restTemplate.getForObject("http://localhost:8080/getTTsAfter/dateTime/{dateTime}", TTEvent[].class, params);
+		TTEvent[] es = restTemplate.getForObject(endpoint+"/getTTsAfter/dateTime/{dateTime}", TTEvent[].class, params);
 		
 		return es;
 	}
