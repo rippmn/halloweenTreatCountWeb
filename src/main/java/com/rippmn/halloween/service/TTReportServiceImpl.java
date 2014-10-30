@@ -8,10 +8,12 @@ import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.rippmn.halloween.domain.TTEvent;
 import com.rippmn.halloween.domain.TrickOrTreatReportingEvent;
 
+@Component
 public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 	@Autowired
@@ -38,6 +40,8 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 	@PostConstruct
 	public void initialize() {
+		
+		System.out.println("Initializing the events cache");
 		TTEvent[] es = ttes.getAllTTEvents();
 
 		TreeMap<Date, Integer> ttes = new TreeMap<Date, Integer>();
