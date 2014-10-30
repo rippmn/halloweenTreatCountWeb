@@ -137,7 +137,7 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 				// if the time is not greater than the next key we should not
 				// add
 				Integer nextKey = ttresByTime.higherKey(lastKey);
-				if (TrickOrTreatReportingEvent.getTime(new Date()) > nextKey) {
+				if (nextKey != null && TrickOrTreatReportingEvent.getTime(new Date()) > nextKey) {
 					ttres.add(ttresByTime.get(nextKey));
 				}
 			}
