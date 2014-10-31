@@ -14,8 +14,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/track.html").hasAnyRole("PC_REZ");
+                .antMatchers("/trickOrTreat").hasAnyRole("PC_REZ");
         http.formLogin();
+        
+        http.csrf().disable();
         
     }
 
