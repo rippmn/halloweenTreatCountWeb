@@ -12,7 +12,7 @@ public class UpdateReportDataJob{
 		@Autowired
 		TrickOrTreaterReportService service;
 	
-		@Scheduled(cron="0 0/2 17-22 * * *")
+		@Scheduled(cron="0 0/2 17-21 * * *")
 		public void theTask(){
 			service.updateReport();
 		}
