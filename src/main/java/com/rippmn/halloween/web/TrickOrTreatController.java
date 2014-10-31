@@ -49,4 +49,10 @@ public class TrickOrTreatController {
 		
 		return model;
 	}
+	
+	@RequestMapping("/")
+	public ModelAndView home(){
+		
+		return report();
+	}
 }
