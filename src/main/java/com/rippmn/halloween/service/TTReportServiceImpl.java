@@ -124,6 +124,11 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 	}
 
+	@Override
+	public TrickOrTreatReportingEvent getLatestEvent() {
+		return ttres.get(ttres.size()-1);
+	}
+	
 	private void updateList() {
 		// TODO this would be cooler if and only if we could add to existing
 		// list instead of creating new one (future)
@@ -154,18 +159,6 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 			}
 		}
 
-		//
-
-		// if (ttresByTime
-		// .floorKey(TrickOrTreatReportingEvent.getTime(new Date())) != null) {
-		// // the returnable subset to be up to date
-		// ttres = new ArrayList<TrickOrTreatReportingEvent>(ttresByTime
-		// .headMap(TrickOrTreatReportingEvent.getTime(new Date()),
-		// false).values());
-		// } else {
-		// ttres = new ArrayList<TrickOrTreatReportingEvent>();
-		// ttres.add(ttresByTime.firstEntry().getValue());
-		// }
 	}
 
 }

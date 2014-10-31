@@ -9,4 +9,6 @@ public interface TrickOrTreaterReportService {
 	public List<TrickOrTreatReportingEvent> getAllEvents();
 
 	public void updateReport();
+	
+	public TrickOrTreatReportingEvent getLatestEvent();
 }
