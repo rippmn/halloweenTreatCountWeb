@@ -16,6 +16,8 @@ import com.rippmn.halloween.domain.TrickOrTreatReportingEvent;
 @Component
 public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
+	private static final long DATE_OFFSET = (5 * 60 * 60000l);
+
 	@Autowired
 	private TrickOrTreatEventService ttes;
 
@@ -40,14 +42,16 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 	@PostConstruct
 	public void initialize() {
-		
+
 		System.out.println("Initializing the events cache");
 		TTEvent[] es = ttes.getAllTTEvents();
 
 		TreeMap<Date, Integer> ttes = new TreeMap<Date, Integer>();
 
 		for (TTEvent tte : es) {
-			ttes.put(tte.getEventDateTime(), tte.getCount());
+			// modified to adjust the time
+			ttes.put(new Date(tte.getEventDateTime().getTime() - DATE_OFFSET),
+					tte.getCount());
 		}
 
 		for (Date d : ttes.keySet()) {
@@ -116,7 +120,8 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 		if (ttesEvents != null && ttesEvents.length > 0) {
 			for (TTEvent tte : ttesEvents) {
-				this.addEvent(tte.getEventDateTime(), tte.getCount(), true);
+				this.addEvent(new Date(tte.getEventDateTime().getTime()
+						- DATE_OFFSET), tte.getCount(), true);
 			}
 		}
 
@@ -126,9 +131,13 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 	@Override
 	public TrickOrTreatReportingEvent getLatestEvent() {
-		return ttres.get(ttres.size()-1);
+		if (ttres.size() > 0) {
+			return ttres.get(ttres.size() - 1);
+		} else {
+			return null;
+		}
 	}
-	
+
 	private void updateList() {
 		// TODO this would be cooler if and only if we could add to existing
 		// list instead of creating new one (future)
@@ -142,7 +151,8 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 				// if the time is not greater than the next key we should not
 				// add
 				Integer nextKey = ttresByTime.higherKey(lastKey);
-				if (nextKey != null && TrickOrTreatReportingEvent.getTime(new Date()) > nextKey) {
+				if (nextKey != null
+						&& TrickOrTreatReportingEvent.getTime(new Date()) > nextKey) {
 					ttres.add(ttresByTime.get(nextKey));
 				}
 			}
@@ -150,8 +160,8 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 		} else {// this is the initial load
 			ttres = new ArrayList<TrickOrTreatReportingEvent>();
 
-			Integer currentTime = TrickOrTreatReportingEvent
-					.getTime(new Date());
+			Integer currentTime = TrickOrTreatReportingEvent.getTime(new Date(
+					System.currentTimeMillis() - DATE_OFFSET));
 			if (ttresByTime.floorKey(currentTime) != null) {
 				// the returnable subset to be up to date
 				ttres = new ArrayList<TrickOrTreatReportingEvent>(ttresByTime
