@@ -4,7 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.rippmn.halloween.domain.TTEvent;
@@ -41,5 +45,26 @@ public class RestClientTrickOrTreatEventService implements
 		
 		return es;
 	}
+
+	@Override
+	public void trickOrTreatEvent(int count) {
+		RestTemplate restTemplate = new RestTemplate();
+		
+//		HashMap<String, String> params = new HashMap<String, String>();
+//		params.put("count", String.valueOf(count));
+//		
+		
+		MultiValueMap<String, String> mvm = new LinkedMultiValueMap<String, String>();
+		mvm.add("count", String.valueOf(count));
+		
+		try{
+			restTemplate.postForEntity(endpoint+"/trickOrTreat", mvm, TTEvent.class);
+		}catch(HttpClientErrorException e){
+			System.out.println(e.getResponseBodyAsString());
+		}
+		
+	}
+	
+	
 
 }

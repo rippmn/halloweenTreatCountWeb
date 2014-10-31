@@ -9,4 +9,6 @@ public interface TrickOrTreatEventService {
 	public TTEvent[] getAllTTEvents();
 	
 	public TTEvent[] getEventsAfterDate(Date d);
+	
+	public void trickOrTreatEvent(int count);
 }
