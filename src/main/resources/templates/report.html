@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+<title>Trick Or Treat Counts</title>
+</head>
+<body>
+
+	<table>
+		<tr><th>Year</th><th>Count</th></tr>
+		<tr th:each="year : ${counts}">
+    	<td th:text="${year.key}">1111</td>
+    	<td th:text="${year.value}">111</td>
+		</tr> 
+	</table>
+
+</body>
+</html>
