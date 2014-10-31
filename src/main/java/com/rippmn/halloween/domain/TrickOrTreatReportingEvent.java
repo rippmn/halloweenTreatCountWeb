@@ -13,6 +13,7 @@ public class TrickOrTreatReportingEvent {
 	
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
 	private static final SimpleDateFormat secSdf = new SimpleDateFormat("ss");
+	private static final SimpleDateFormat minSdf = new SimpleDateFormat("mm");
 	private static final SimpleDateFormat yearSdf = new SimpleDateFormat("YYYY");
 	
 	public TrickOrTreatReportingEvent(Date eventDate, int count){
@@ -44,8 +45,13 @@ public class TrickOrTreatReportingEvent {
 		
 		if(mod == 0){
 			if(!secSdf.format(date).equals("00")){
-				time+=2;
+					time+=2;
 			}
+			
+			if(minSdf.format(date).equalsIgnoreCase("58")){
+				 time+=40;
+			}
+			
 		}else{
 			time += time%2;
 		}

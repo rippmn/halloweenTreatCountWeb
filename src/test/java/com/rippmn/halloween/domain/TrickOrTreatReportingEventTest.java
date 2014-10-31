@@ -2,6 +2,7 @@ package com.rippmn.halloween.domain;
 
 import static org.junit.Assert.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,9 +48,18 @@ public class TrickOrTreatReportingEventTest {
 		time = TrickOrTreatReportingEvent.getTime(new Date(counterAdd));
 		assertEquals(basetime+4, time.intValue());
 		
-
 		time = TrickOrTreatReportingEvent.getTime(new Date(1000));
 		assertEquals(basetime+2, time.intValue());
+		
+		sdf = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss");
+		
+		try{
+			time = TrickOrTreatReportingEvent.getTime(sdf.parse("2014-10-31 14:58:01"));
+			assertEquals(1500, time.intValue());
+		}catch(ParseException pe){
+			fail("test exception");
+		}
+		
 		
 	}
 	
