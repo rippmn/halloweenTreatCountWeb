@@ -34,12 +34,11 @@ public class RestClientTrickOrTreatEventService implements
 	@Override
 	public TTEvent[] getEventsAfterDate(Date d) {
 		RestTemplate restTemplate = new RestTemplate();
-		//TODO fix links
 		HashMap<String, String> params = new HashMap<String, String>();
 		
 		params.put("dateTime", sdf.format(d));
 		
-		System.out.println("calling get After");
+		//System.out.println("calling get After" +);
 		
 		TTEvent[] es = restTemplate.getForObject(endpoint+"/getTTsAfter/dateTime/{dateTime}", TTEvent[].class, params);
 		
