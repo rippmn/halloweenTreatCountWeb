@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -48,10 +47,6 @@ public class RestClientTrickOrTreatEventService implements
 	@Override
 	public void trickOrTreatEvent(int count) {
 		RestTemplate restTemplate = new RestTemplate();
-		
-//		HashMap<String, String> params = new HashMap<String, String>();
-//		params.put("count", String.valueOf(count));
-//		
 		
 		MultiValueMap<String, String> mvm = new LinkedMultiValueMap<String, String>();
 		mvm.add("count", String.valueOf(count));
