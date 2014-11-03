@@ -56,6 +56,13 @@ public class TrickOrTreatReportingEventTest {
 		try{
 			time = TrickOrTreatReportingEvent.getTime(sdf.parse("2014-10-31 14:58:01"));
 			assertEquals(1500, time.intValue());
+			time = TrickOrTreatReportingEvent.getTime(sdf.parse("2014-10-31 14:59:01"));
+			assertEquals(1500, time.intValue());
+			time = TrickOrTreatReportingEvent.getTime(sdf.parse("2014-10-31 14:00:00"));
+			assertEquals(1400, time.intValue());
+			time = TrickOrTreatReportingEvent.getTime(sdf.parse("2014-10-31 14:59:59"));
+			assertEquals(1500, time.intValue());
+			
 		}catch(ParseException pe){
 			fail("test exception");
 		}
