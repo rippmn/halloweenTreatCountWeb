@@ -27,7 +27,9 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 	private ArrayList<TrickOrTreatReportingEvent> ttres;
 
-	private TreeMap<Integer, TrickOrTreatReportingEvent> ttresByTime = new TreeMap<Integer, TrickOrTreatReportingEvent>();
+	private TreeMap<Integer, TrickOrTreatReportingEvent> ttresByTime;
+
+	private long lastInit;
 
 	@Override
 	public List<TrickOrTreatReportingEvent> getAllEvents() {
@@ -42,41 +44,45 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 
 	@PostConstruct
 	public void initialize() {
+		if (System.currentTimeMillis() > lastInit+120000l) {
+			System.out.println("Initializing the events cache");
 
-		System.out.println("Initializing the events cache");
-		TTEvent[] es = ttes.getAllTTEvents();
+			ttresByTime = new TreeMap<Integer, TrickOrTreatReportingEvent>();
+			TTEvent[] es = ttes.getAllTTEvents();
 
-		TreeMap<Date, Integer> ttes = new TreeMap<Date, Integer>();
+			TreeMap<Date, Integer> ttes = new TreeMap<Date, Integer>();
 
-		for (TTEvent tte : es) {
-			// modified to adjust the time
-			ttes.put(new Date(tte.getEventDateTime().getTime() - DATE_OFFSET),
-					tte.getCount());
-		}
-
-		for (Date d : ttes.keySet()) {
-
-			this.addEvent(d, ttes.get(d), false);
-
-		}
-
-		// now we need to update the totals (transfer prior counts)
-		TrickOrTreatReportingEvent lastEvent = null;
-		for (TrickOrTreatReportingEvent event : ttresByTime.values()) {
-			if (lastEvent != null) {
-				for (String year : lastEvent.getYearCounts().keySet()) {
-					int lastCount = lastEvent.getYearCounts().get(year);
-					int currentCount = event.getYearCounts().get(year) != null ? event
-							.getYearCounts().get(year) : 0;
-					event.getYearCounts().put(year, lastCount + currentCount);
-				}
+			for (TTEvent tte : es) {
+				// modified to adjust the time
+				ttes.put(new Date(tte.getEventDateTime().getTime()
+						- DATE_OFFSET), tte.getCount());
 			}
-			lastEvent = event;
 
+			for (Date d : ttes.keySet()) {
+
+				this.addEvent(d, ttes.get(d), false);
+
+			}
+
+			// now we need to update the totals (transfer prior counts)
+			TrickOrTreatReportingEvent lastEvent = null;
+			for (TrickOrTreatReportingEvent event : ttresByTime.values()) {
+				if (lastEvent != null) {
+					for (String year : lastEvent.getYearCounts().keySet()) {
+						int lastCount = lastEvent.getYearCounts().get(year);
+						int currentCount = event.getYearCounts().get(year) != null ? event
+								.getYearCounts().get(year) : 0;
+						event.getYearCounts().put(year,
+								lastCount + currentCount);
+					}
+				}
+				lastEvent = event;
+
+			}
+
+			this.updateList();
+			lastInit = System.currentTimeMillis();
 		}
-
-		this.updateList();
-
 	}
 
 	private void addEvent(Date d, Integer count, boolean updateTotals) {
@@ -141,7 +147,7 @@ public class TTReportServiceImpl implements TrickOrTreaterReportService {
 	private void updateList() {
 		// TODO this would be cooler if and only if we could add to existing
 		// list instead of creating new one (future)
-
+		ttres = null;
 		if (ttres != null) {
 
 			// need to add the next entry
