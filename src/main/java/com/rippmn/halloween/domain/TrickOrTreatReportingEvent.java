@@ -48,12 +48,12 @@ public class TrickOrTreatReportingEvent {
 					time+=2;
 			}
 			
-			if(minSdf.format(date).equalsIgnoreCase("58")){
-				 time+=40;
-			}
-			
 		}else{
 			time += time%2;
+		}
+		
+		if((time-60)%100 == 0){
+			time += 40;
 		}
 		
 		return time;
